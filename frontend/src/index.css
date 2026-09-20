@@ -1,4 +1,81 @@
+/* ExamGuard base theme — reuse these tokens across pages */
+:root {
+  --color-navy-950: #0f1c2e;
+  --color-navy-900: #1b3654;
+  --color-navy-800: #23466d;
+  --color-slate-700: #3d4f63;
+  --color-slate-500: #6b7c8f;
+  --color-slate-300: #c5d0dc;
+  --color-slate-100: #e8eef4;
+  --color-canvas: #f4f7fa;
+  --color-surface: #ffffff;
+  --color-gold: #c9a227;
+  --color-gold-soft: #f6edd0;
+  --color-danger: #b42318;
+  --color-danger-bg: #fef3f2;
+  --color-danger-border: #fecdca;
+  --color-focus: #2a6f97;
+
+  --shadow-card: 0 12px 40px rgba(15, 28, 46, 0.1);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --font-sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --transition: 160ms ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  min-height: 100%;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-navy-950);
+  background: var(--color-canvas);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+a {
+  color: var(--color-navy-800);
+}
+
+a:hover {
+  color: var(--color-navy-900);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
