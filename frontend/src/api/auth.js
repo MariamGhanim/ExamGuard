@@ -1,60 +1,68 @@
-/**
- * Frontend-only auth helpers.
- *
- * Every function below is a MOCK: it waits briefly and then succeeds.
- * No real OTP is generated or sent. Replace the function bodies with
- * fetch() calls when the backend is ready (see per-function comments).
- */
+const API_URL = "http://localhost:3000/api/auth";
 
-const MOCK_DELAY_MS = 800;
+export async function signIn({ email, password, rememberMe }) {
+    const response = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            email,
+            password,
+            rememberMe,
+        }),
+    });
 
-function wait(ms = MOCK_DELAY_MS) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message);
+    }
+
+    return result;
 }
 
-/**
- * PLACEHOLDER — replace with a real API call, for example:
- *   POST /api/auth/signin
- *   body: { nationalId, email }
- *   200:  { user }
- *   404:  { message: "National ID not found" }
- */
-export async function signIn({ nationalId, email }) {
-  await wait();
-  return { nationalId, email };
-}
-
-/**
- * PLACEHOLDER — replace with a real API call that emails a verification code:
- *   POST /api/auth/register
- *   body: { nationalId, email }
- *   200:  { email }
- *   409:  { message: "Account already exists" }
- */
 export async function register({ nationalId, email }) {
-  await wait();
-  return { nationalId, email };
+    const response = await fetch(`${API_URL}/register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            nationalId,
+            email,
+        }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message);
+    }
+
+    return result;
 }
 
-/**
- * PLACEHOLDER — replace with a real API call, for example:
- *   POST /api/auth/verify-code
- *   body: { email, code }
- *   200:  { verified: true }
- *   400:  { message: "Invalid or expired code" }
- */
 export async function verifyCode({ email, code }) {
-  await wait();
-  return { email, verified: true };
-}
+    const response = await fetch(
+        `${API_URL}/verify-registration`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+                code,
+            }),
+        }
+    );
 
-/**
- * PLACEHOLDER — replace with a real API call that resends the email code:
- *   POST /api/auth/resend-code
- *   body: { email }
- *   200:  { email }
- */
-export async function resendCode({ email }) {
-  await wait();
-  return { email };
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message);
+    }
+
+    return result;
 }
