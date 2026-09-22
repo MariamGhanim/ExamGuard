@@ -12,14 +12,20 @@ const RESEND_COOLDOWN_SECONDS = 30;
 export default function VerifyCodePage() {
   const navigate = useNavigate();
   const location = useLocation();
+
   const email = location.state?.email;
+
   const { validateOtpCode, digitsOnly } = useAuthValidation();
 
-  const [digits, setDigits] = useState(() => Array(OTP_LENGTH).fill(""));
+  const [digits, setDigits] = useState(
+    () => Array(OTP_LENGTH).fill("")
+  );
+
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN_SECONDS);
+
   const inputRefs = useRef([]);
 
   useEffect(() => {
@@ -47,50 +53,93 @@ export default function VerifyCodePage() {
 
   function handleChange(index, value) {
     const nextDigit = digitsOnly(value).slice(-1);
+
     const next = [...digits];
+
     next[index] = nextDigit;
+
     updateDigits(next);
-    if (nextDigit && index < OTP_LENGTH - 1) {
+
+    if (
+      nextDigit &&
+      index < OTP_LENGTH - 1
+    ) {
       focusIndex(index + 1);
     }
   }
 
   function handleKeyDown(index, event) {
-    if (event.key === "Backspace" && !digits[index] && index > 0) {
+    if (
+      event.key === "Backspace" &&
+      !digits[index] &&
+      index > 0
+    ) {
       const next = [...digits];
+
       next[index - 1] = "";
+
       updateDigits(next);
+
       focusIndex(index - 1);
     }
   }
 
   function handlePaste(event) {
     event.preventDefault();
-    const pasted = digitsOnly(event.clipboardData.getData("text")).slice(0, OTP_LENGTH);
-    if (!pasted) return;
+
+    const pasted = digitsOnly(
+      event.clipboardData.getData("text")
+    ).slice(0, OTP_LENGTH);
+
+    if (!pasted) {
+      return;
+    }
+
     const next = Array(OTP_LENGTH).fill("");
+
     pasted.split("").forEach((digit, index) => {
       next[index] = digit;
     });
+
     updateDigits(next);
-    focusIndex(Math.min(pasted.length, OTP_LENGTH - 1));
+
+    focusIndex(
+      Math.min(
+        pasted.length,
+        OTP_LENGTH - 1
+      )
+    );
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
+
     const error = validateOtpCode(code);
+
     if (error) {
       setFormError(error);
       return;
     }
 
     setIsSubmitting(true);
+    setFormError("");
+
     try {
-      // Mock: any 6-digit code is accepted. See api/auth.js.
-      await verifyCode({ email, code });
-      navigate("/home", { replace: true });
+      await verifyCode({
+        email,
+        code,
+      });
+
+      navigate("/home", {
+        replace: true,
+      });
+
     } catch (err) {
-      setFormError(err.message || "Invalid or expired code");
+      setFormError(
+        err.message ||
+        "Invalid or expired code"
+      );
+
     } finally {
       setIsSubmitting(false);
     }
@@ -101,7 +150,6 @@ export default function VerifyCodePage() {
     setFormError("");
     setIsResending(true);
     try {
-      // Mock: pretends a new code was emailed. See api/auth.js.
       await resendCode({ email });
       setCooldown(RESEND_COOLDOWN_SECONDS);
       setDigits(Array(OTP_LENGTH).fill(""));
@@ -114,7 +162,10 @@ export default function VerifyCodePage() {
   }
 
   return (
-    <AuthLayout titleId="verify-heading" subtitle="Verify your email">
+    <AuthLayout
+      titleId="verify-heading"
+      subtitle="Verify your email"
+    >
       <form
         className="login-form"
         onSubmit={handleSubmit}
@@ -122,43 +173,81 @@ export default function VerifyCodePage() {
         aria-busy={isSubmitting}
       >
         <p className="verify-code__message">
-          We sent a 6-digit code to <strong>{email}</strong>
+          We sent a 6-digit code to{" "}
+          <strong>{email}</strong>
         </p>
 
         {formError ? (
-          <p className="login-form__banner" role="alert">
+          <p
+            className="login-form__banner"
+            role="alert"
+          >
             {formError}
           </p>
         ) : null}
 
         <fieldset className="verify-code__fieldset">
-          <legend className="visually-hidden">6-digit verification code</legend>
-          <div className="verify-code__digits" onPaste={handlePaste}>
+          <legend className="visually-hidden">
+            6-digit verification code
+          </legend>
+
+          <div
+            className="verify-code__digits"
+            onPaste={handlePaste}
+          >
             {digits.map((digit, index) => (
               <input
                 key={index}
                 ref={(node) => {
                   inputRefs.current[index] = node;
                 }}
-                className={`verify-code__digit${formError ? " is-invalid" : ""}`}
+                className={`verify-code__digit${
+                  formError
+                    ? " is-invalid"
+                    : ""
+                }`}
                 type="text"
                 inputMode="numeric"
-                autoComplete={index === 0 ? "one-time-code" : "off"}
+                autoComplete={
+                  index === 0
+                    ? "one-time-code"
+                    : "off"
+                }
                 maxLength={1}
                 value={digit}
                 disabled={isSubmitting}
-                aria-label={`Digit ${index + 1} of ${OTP_LENGTH}`}
-                onChange={(event) => handleChange(index, event.target.value)}
-                onKeyDown={(event) => handleKeyDown(index, event)}
+                aria-label={`Digit ${
+                  index + 1
+                } of ${OTP_LENGTH}`}
+                onChange={(event) =>
+                  handleChange(
+                    index,
+                    event.target.value
+                  )
+                }
+                onKeyDown={(event) =>
+                  handleKeyDown(
+                    index,
+                    event
+                  )
+                }
               />
             ))}
           </div>
         </fieldset>
 
-        <button className="login-form__submit" type="submit" disabled={isSubmitting}>
+        <button
+          className="login-form__submit"
+          type="submit"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? (
             <>
-              <span className="login-form__spinner" aria-hidden="true" />
+              <span
+                className="login-form__spinner"
+                aria-hidden="true"
+              />
+
               Verifying…
             </>
           ) : (
@@ -179,7 +268,10 @@ export default function VerifyCodePage() {
                 ? `Resend code in ${cooldown}s`
                 : "Resend code"}
           </button>
-          <Link className="login-form__forgot" to="/login">
+          <Link
+            className="login-form__forgot"
+            to="/login"
+          >
             Back
           </Link>
         </div>
