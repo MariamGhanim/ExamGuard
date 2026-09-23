@@ -611,7 +611,7 @@
     render();
     document.getElementById('contentScroll').scrollTop = 0;
   }
-//
+
   function backFromAlert(){
     if(state.alertFrom === 'ai-alerts'){ navigate('ai-alerts'); }
     else {
