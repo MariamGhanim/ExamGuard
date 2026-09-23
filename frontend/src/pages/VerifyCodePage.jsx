@@ -129,10 +129,8 @@ export default function VerifyCodePage() {
         email,
         code,
       });
-
-      navigate("/home", {
-        replace: true,
-      });
+      window.location.href = "/proctor-dashboard/index.html";
+     
 
     } catch (err) {
       setFormError(

@@ -33,8 +33,7 @@ export default function LoginPage() {
           sessionStorage.setItem("token", result.token);
         }
       }
-
-      navigate("/home", { replace: true });
+window.location.href = "/proctor-dashboard/index.html";
 
     } catch (error) {
       console.error(error);
